@@ -28,7 +28,8 @@
       <el-table-column
         label="日期"
         width="120"
-        prop="birth">
+        prop="birth"
+        sortable>
       </el-table-column>
       <el-table-column
         prop="name"
@@ -58,11 +59,32 @@
     </div>
     <el-col :span="24">
       <el-pagination
-        layout="prev, pager, next"
+        background
+        layout="total, prev, pager, next"
+        :page-size="20"
         :total="total"
-        @current-change="handleCurrentChange">
+        @current-change="handleCurrentChange"
+        style="float: right;">
       </el-pagination>
     </el-col>
+
+    <el-dialog title="修改" :visible.sync="dialogFormVisible">
+      <el-form :model="formData">
+        <el-form-item label="姓名" :label-width="formLabelWidth">
+          <el-input v-model="formData.name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="生日" :label-width="formLabelWidth">
+          <el-date-picker v-model="formData.birth" placeholder="选择日期"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="地址" :label-width="formLabelWidth">
+          <el-input v-model="formData.addr" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
 	</section>
 </template>
 
@@ -80,7 +102,14 @@ export default {
       multipleSelection: [],
       page: 1,
       listLoading: false,
-      total:0
+      total:0,
+      dialogFormVisible: false,
+      formData: {
+        birth: null,
+        name: '',
+        addr: ''
+      },
+      formLabelWidth: '80px'
     };
   },
   methods: {
@@ -89,6 +118,7 @@ export default {
     },
     add() {
       console.log('add!')
+      this.dialogFormVisible = true
     },
     toggleSelection(rows) {
       if (rows) {
